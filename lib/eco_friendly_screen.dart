@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class EcoFriendlyScreen extends StatelessWidget {
-  const EcoFriendlyScreen({Key? key}) : super(key: key);
+  const EcoFriendlyScreen({super.key});
 
   final List<Map<String, String>> products = const [
     {

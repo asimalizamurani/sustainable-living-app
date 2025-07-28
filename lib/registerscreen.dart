@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pw_validator/flutter_pw_validator.dart';
-import 'package:register_user/models/user_model.dart';
+import 'package:sustainable_living_app/models/user_model.dart';
 
 class Registerscreen extends StatefulWidget {
 
@@ -13,7 +12,7 @@ class Registerscreen extends StatefulWidget {
 }
 
 class _RegisterscreenState extends State<Registerscreen> {
-  static var _formKey = GlobalKey<FormState>();
+  static final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();

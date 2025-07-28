@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LeaderBoardScreen extends StatelessWidget {
-  const LeaderBoardScreen({Key? key}) : super(key: key);
+  const LeaderBoardScreen({super.key});
 
   final List<Map<String, dynamic>> leaders = const [
     {'name': 'Alice', 'score': 1200, 'avatar': 'A'},
@@ -62,6 +62,7 @@ class LeaderBoardScreen extends StatelessWidget {
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: _getMedalColor(index),
+                        radius: 26,
                         child: Text(
                           leader['avatar'],
                           style: const TextStyle(
@@ -69,7 +70,6 @@ class LeaderBoardScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        radius: 26,
                       ),
                       title: Text(
                         leader['name'],

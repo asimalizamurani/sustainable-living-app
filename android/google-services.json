@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "74371667917",
-    "project_id": "fireapp-88217",
-    "storage_bucket": "fireapp-88217.firebasestorage.app"
+    "project_number": "474181630429",
+    "project_id": "sustainable-4d4c9",
+    "storage_bucket": "sustainable-4d4c9.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:74371667917:android:3cb4aa9ca0c19bf80d1684",
-        "android_client_info": {
-          "package_name": "com.example.app"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDUNNaZe7hrtdKsXUBbwxKb1OpsiFEIadk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:74371667917:android:3381d5cce1c22a7e0d1684",
+        "mobilesdk_app_id": "1:474181630429:android:6b2fb24166271fb41a5e34",
         "android_client_info": {
           "package_name": "com.example.register_user"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDUNNaZe7hrtdKsXUBbwxKb1OpsiFEIadk"
+          "current_key": "AIzaSyBhMlv411Fq_e6P_BYcYdfQ7k6P-6jpi3U"
         }
       ],
       "services": {

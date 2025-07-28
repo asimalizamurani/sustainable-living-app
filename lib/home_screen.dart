@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:register_user/leader_board_screen.dart';
+import 'package:sustainable_living_app/leader_board_screen.dart';
 import 'eco_friendly_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -120,8 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
             const SnackBar(content: Text('Add a new tip')),
           );
         },
-        child: const Icon(Icons.add),
         backgroundColor: Colors.deepOrangeAccent,
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
