@@ -9,11 +9,18 @@ import 'screens/admin_dashboard.dart';
 import 'models/user_model.dart';
 
 void main() async {
+  try {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
+    await Firebase.initializeApp(
     // options: DefaultFirebaseOptions.currentPlatform,
     options: firebaseoption,
   );
+
+  print("Firebase connected successfully");
+  } catch(err) {
+    print("Failed to connect to db");
+  }
+
   runApp(const MyApp());
 }
 
