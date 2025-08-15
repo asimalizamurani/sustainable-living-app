@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/carbon_tracker_model.dart';
+import '../models/filter_type_model.dart';
 import '../services/auth_service.dart';
 import 'package:intl/intl.dart';
 
@@ -15,8 +16,49 @@ class _CarbonTrackerScreenState extends State<CarbonTrackerScreen> {
   final AuthService _authService = AuthService();
   List<CarbonTrackerModel> _activities = [];
   bool _isLoading = true;
-  ActivityType _selectedFilter = ActivityType.lifestyle;
+  FilterType _selectedFilter = FilterType.all;
   DateTime _selectedDate = DateTime.now();
+
+  // Added the following code in carbonTrackerScreenState
+  ActivityType? _getActivityTypeFromFilter(FilterType filter) {
+  switch (filter) {
+    case FilterType.transport:
+      return ActivityType.transport;
+    case FilterType.energy:
+      return ActivityType.energy;
+    case FilterType.food:
+      return ActivityType.food;
+    case FilterType.waste:
+      return ActivityType.waste;
+    case FilterType.water:
+      return ActivityType.water;
+    case FilterType.shopping:
+      return ActivityType.shopping;
+    case FilterType.lifestyle:
+      return ActivityType.lifestyle;
+    case FilterType.all:
+      return null;
+  }
+}
+
+FilterType _getFilterTypeFromActivity(ActivityType activityType) {
+  switch (activityType) {
+    case ActivityType.transport:
+      return FilterType.transport;
+    case ActivityType.energy:
+      return FilterType.energy;
+    case ActivityType.food:
+      return FilterType.food;
+    case ActivityType.waste:
+      return FilterType.waste;
+    case ActivityType.water:
+      return FilterType.water;
+    case ActivityType.shopping:
+      return FilterType.shopping;
+    case ActivityType.lifestyle:
+      return FilterType.lifestyle;
+  }
+}
 
   @override
   void initState() {
@@ -78,6 +120,15 @@ class _CarbonTrackerScreenState extends State<CarbonTrackerScreen> {
             .collection('carbon_tracker')
             .add(activity.toMap());
 
+// updated the following code
+            setState(() {
+              _selectedDate = activity.date;
+              _selectedFilter = _getFilterTypeFromActivity(activity.activityType);
+              if (![FilterType.transport, FilterType.energy, FilterType.food, FilterType.waste].contains(_selectedFilter)) {
+                _selectedFilter = FilterType.all;
+              }
+            });
+
         _loadActivities();
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -98,17 +149,18 @@ class _CarbonTrackerScreenState extends State<CarbonTrackerScreen> {
   }
 
   List<CarbonTrackerModel> get _filteredActivities {
-    return _activities.where((activity) {
-      final sameDate = activity.date.year == _selectedDate.year &&
-          activity.date.month == _selectedDate.month &&
-          activity.date.day == _selectedDate.day;
-      
-      final sameType = _selectedFilter == ActivityType.lifestyle ||
-          activity.activityType == _selectedFilter;
+  return _activities.where((activity) {
+    final sameDate = activity.date.year == _selectedDate.year &&
+        activity.date.month == _selectedDate.month &&
+        activity.date.day == _selectedDate.day;
+    
+    final activityTypeFromFilter = _getActivityTypeFromFilter(_selectedFilter);
+    final sameType = _selectedFilter == FilterType.all ||
+        activity.activityType == activityTypeFromFilter;
 
-      return sameDate && sameType;
-    }).toList();
-  }
+    return sameDate && sameType;
+  }).toList();
+}
 
   double get _totalCarbonFootprint {
     return _filteredActivities.fold(0, (sum, activity) => sum + activity.carbonFootprint);
@@ -209,48 +261,48 @@ class _CarbonTrackerScreenState extends State<CarbonTrackerScreen> {
             ),
 
             // Filter Chips
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    FilterChip(
-                      label: const Text('ALL'),
-                      selected: _selectedFilter == ActivityType.lifestyle,
-                      onSelected: (selected) {
-                        setState(() {
-                          _selectedFilter = ActivityType.lifestyle;
-                        });
-                      },
-                      backgroundColor: Colors.white,
-                      selectedColor: const Color(0xFF4CAF50),
-                      checkmarkColor: Colors.white,
-                    ),
-                    const SizedBox(width: 8),
-                    ...ActivityType.values.where((type) => type != ActivityType.lifestyle).map((type) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: FilterChip(
-                          label: Text(
-                            type.toString().split('.').last.toUpperCase(),
-                          ),
-                          selected: _selectedFilter == type,
-                          onSelected: (selected) {
-                            setState(() {
-                              _selectedFilter = type;
-                            });
-                          },
-                          backgroundColor: Colors.white,
-                          selectedColor: const Color(0xFF4CAF50),
-                          checkmarkColor: Colors.white,
-                        ),
-                      );
-                    }),
-                  ],
-                ),
+           Container(
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child: SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
+    child: Row(
+      children: [
+        FilterChip(
+          label: const Text('ALL'),
+          selected: _selectedFilter == FilterType.all,
+          onSelected: (selected) {
+            setState(() {
+              _selectedFilter = FilterType.all;
+            });
+          },
+          backgroundColor: Colors.white,
+          selectedColor: const Color(0xFF4CAF50),
+          checkmarkColor: Colors.white,
+        ),
+        const SizedBox(width: 8),
+        ...[FilterType.transport, FilterType.energy, FilterType.food, FilterType.waste].map((type) {
+          return Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: FilterChip(
+              label: Text(
+                type.toString().split('.').last.toUpperCase(),
               ),
+              selected: _selectedFilter == type,
+              onSelected: (selected) {
+                setState(() {
+                  _selectedFilter = type;
+                });
+              },
+              backgroundColor: Colors.white,
+              selectedColor: const Color(0xFF4CAF50),
+              checkmarkColor: Colors.white,
             ),
+          );
+        }),
+      ],
+    ),
+  ),
+),
 
             const SizedBox(height: 16),
 

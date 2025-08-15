@@ -7,7 +7,7 @@ enum ActivityType {
   water, 
   shopping, 
   lifestyle 
-}
+} 
 
 class CarbonTrackerModel {
   String? id;
