@@ -116,6 +116,7 @@ class AuthService {
           }
         } else {
           print('User document not found in Firestore');
+          return null; // Explicitly return null if document does not exist
         }
       }
     } catch (e) {
