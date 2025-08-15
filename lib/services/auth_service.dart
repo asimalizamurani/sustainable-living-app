@@ -68,12 +68,14 @@ class AuthService {
     required String password,
   }) async {
     try {
+      print('Attempting login for email: $email');
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       if (result.user != null) {
+        print('Firebase Auth successful, user ID: ${result.user!.uid}');
         // Get user data from Firestore
         DocumentSnapshot doc = await _firestore
             .collection('users')
@@ -81,23 +83,46 @@ class AuthService {
             .get();
 
         if (doc.exists) {
-          UserModel userModel = UserModel.fromMap(doc.data() as Map<String, dynamic>);
-          
-          // Update last login
-          await _firestore
-              .collection('users')
-              .doc(result.user!.uid)
-              .update({
-            'lastLoginAt': DateTime.now().toIso8601String(),
-          });
+          print('User document found in Firestore');
+                      try {
+              print('Parsing user data from Firestore...');
+              UserModel userModel = UserModel.fromMap(doc.data() as Map<String, dynamic>);
+              print('User model created successfully: ${userModel.name}');
+              
+              // Update last login - use Timestamp for Firestore compatibility
+              await _firestore
+                  .collection('users')
+                  .doc(result.user!.uid)
+                  .update({
+                'lastLoginAt': FieldValue.serverTimestamp(),
+              });
+              print('Last login time updated successfully');
 
-          return userModel;
+              return userModel;
+          } catch (parseError) {
+            print('Error parsing user data: $parseError');
+            // Return a basic user model if parsing fails
+            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+            print('Creating fallback user model due to parsing error');
+            return UserModel(
+              id: result.user!.uid,
+              name: data['name'] ?? 'User',
+              email: data['email'] ?? '',
+              password: '',
+              role: data['role'] == 'admin' ? UserRole.admin : UserRole.user,
+              createdAt: DateTime.now(),
+              lastLoginAt: DateTime.now(),
+            );
+          }
+        } else {
+          print('User document not found in Firestore');
         }
       }
     } catch (e) {
       print('Login error: $e');
       rethrow;
     }
+    print('Login method returning null');
     return null;
   }
 
