@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum ActivityType { 
   transport, 
@@ -8,6 +9,7 @@ enum ActivityType {
   shopping, 
   lifestyle 
 } 
+
 
 class CarbonTrackerModel {
   String? id;
@@ -38,6 +40,36 @@ class CarbonTrackerModel {
     this.updatedAt,
   });
 
+  CarbonTrackerModel copyWith({
+    String? id,
+    String? userId,
+    ActivityType? activityType,
+    String? activityName,
+    double? carbonFootprint,
+    String? description,
+    DateTime? date,
+    String? location,
+    Map<String, dynamic>? activityData,
+    bool? isVerified,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return CarbonTrackerModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      activityType: activityType ?? this.activityType,
+      activityName: activityName ?? this.activityName,
+      carbonFootprint: carbonFootprint ?? this.carbonFootprint,
+      description: description ?? this.description,
+      date: date ?? this.date,
+      location: location ?? this.location,
+      activityData: activityData ?? this.activityData,
+      isVerified: isVerified ?? this.isVerified,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       "id": id,
@@ -46,12 +78,12 @@ class CarbonTrackerModel {
       "activityName": activityName,
       "carbonFootprint": carbonFootprint,
       "description": description,
-      "date": date.toIso8601String(),
+      "date": Timestamp.fromDate(date),
       "location": location,
       "activityData": activityData,
       "isVerified": isVerified,
-      "createdAt": createdAt?.toIso8601String(),
-      "updatedAt": updatedAt?.toIso8601String(),
+      "createdAt": createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
+      "updatedAt": FieldValue.serverTimestamp(),
     };
   }
 
@@ -66,16 +98,12 @@ class CarbonTrackerModel {
       activityName: map['activityName'] ?? '',
       carbonFootprint: (map['carbonFootprint'] ?? 0).toDouble(),
       description: map['description'],
-      date: DateTime.parse(map['date']),
+      date: (map['date'] as Timestamp).toDate(),
       location: map['location'],
       activityData: map['activityData'],
       isVerified: map['isVerified'] ?? false,
-      createdAt: map['createdAt'] != null 
-          ? DateTime.parse(map['createdAt']) 
-          : null,
-      updatedAt: map['updatedAt'] != null 
-          ? DateTime.parse(map['updatedAt']) 
-          : null,
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
+      updatedAt: (map['updatedAt'] as Timestamp?)?.toDate(),
     );
   }
 } 

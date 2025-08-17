@@ -7,6 +7,7 @@ import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/admin_dashboard.dart';
 import 'models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 
 
 void main() async {
@@ -16,6 +17,9 @@ void main() async {
     // options: DefaultFirebaseOptions.currentPlatform,
     options: firebaseoption,
   );
+
+  // Disable Firestore persistence for web to avoid indexedDBLocalPersistence error
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: false);
 
   print("Firebase connected successfully");
   } catch(err) {

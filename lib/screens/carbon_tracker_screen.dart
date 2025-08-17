@@ -80,7 +80,7 @@ FilterType _getFilterTypeFromActivity(ActivityType activityType) {
             .get();
 
         _activities = snapshot.docs
-            .map((doc) => CarbonTrackerModel.fromMap(doc.data()))
+            .map((doc) => CarbonTrackerModel.fromMap(doc.data()).copyWith(id: doc.id))
             .toList();
       }
 
@@ -105,6 +105,16 @@ FilterType _getFilterTypeFromActivity(ActivityType activityType) {
 
     if (result != null) {
       try {
+        // Add null check for current user
+        if (_authService.currentUser == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Please log in to add activities.'),
+              backgroundColor: Colors.red,
+            ),
+          );
+          return;
+        }
         final activity = CarbonTrackerModel(
           userId: _authService.currentUser!.uid,
           activityType: result['activityType'],

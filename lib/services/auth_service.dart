@@ -79,7 +79,7 @@ class AuthService {
         // Get user data from Firestore
         DocumentSnapshot doc = await _firestore
             .collection('users')
-            .doc(result.user!.uid)
+            .doc(result.user?.uid)
             .get();
 
         if (doc.exists) {
@@ -135,16 +135,20 @@ class AuthService {
   // Get user by ID
   Future<UserModel?> getUserById(String userId) async {
     try {
+      print('AuthService: Attempting to get user by ID: $userId');
       DocumentSnapshot doc = await _firestore
           .collection('users')
           .doc(userId)
           .get();
 
       if (doc.exists) {
+        print('AuthService: User document found for ID: $userId');
         return UserModel.fromMap(doc.data() as Map<String, dynamic>);
+      } else {
+        print('AuthService: User document not found for ID: $userId');
       }
     } catch (e) {
-      print('Get user error: $e');
+      print('AuthService: Error getting user by ID: $userId, Error: $e');
     }
     return null;
   }
